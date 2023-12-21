@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+import obj from "./config.js";
 
 const db = mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true })
+  .connect(obj.mongo_uri)
   .then(() => console.log("Conectado a mongoDB"))
   .catch((err) => console.log(err));
 

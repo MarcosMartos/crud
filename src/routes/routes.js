@@ -1,16 +1,16 @@
 import express from "express";
-import { User } from "../models/user.model";
+import { User } from "../models/user.model.js";
 
 const router = express.Router();
 
 // Crear nuevo usuario
-router.post("/users", async (res, req) => {
+router.post("/users", async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
     const user = new User({ name, email, password });
     await user.save();
-    res.send(user);
+    res.status(201).json({ message: "Usuario creado" });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
@@ -18,10 +18,10 @@ router.post("/users", async (res, req) => {
 });
 
 // Buscar todos los usuarios
-router.get("/users", async (res, req) => {
+router.get("/users", async (req, res) => {
   try {
     const users = await User.find({});
-    res.send(users);
+    res.status(200).json({ message: "Usuarios encontrados", users });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
@@ -29,9 +29,9 @@ router.get("/users", async (res, req) => {
 });
 
 // Actualizar un usuario
-router.put("/users/:id", async (res, req) => {
+router.put("/users/:id", async (req, res) => {
   const { id } = req.params;
-  const { name, email, password } = res.body;
+  const { name, email, password } = req.body;
 
   try {
     const user = await User.findByIdAndUpdate(
@@ -39,7 +39,7 @@ router.put("/users/:id", async (res, req) => {
       { name, email, password },
       { new: true }
     );
-    res.send(user);
+    res.status(200).json({ message: "Usuario actualizado", user });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
@@ -47,15 +47,16 @@ router.put("/users/:id", async (res, req) => {
 });
 
 // Eliminar un usuario
-
-router.delete("users/:id", async (res, req) => {
+router.delete("/users/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
     const user = await User.findByIdAndDelete(id);
-    res.send(user);
+    res.status(200).json({ message: "usuario eliminado", user });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
   }
 });
+
+export default router;
