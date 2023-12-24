@@ -1,9 +1,15 @@
 import mongoose from "mongoose";
-import obj from "./config.js";
+import dotenv from "dotenv";
 
-const db = mongoose
-  .connect(obj.mongo_uri)
-  .then(() => console.log("Conectado a mongoDB"))
-  .catch((err) => console.log(err));
+dotenv.config();
+
+mongoose.connect(process.env.MONGO_URI);
+
+const db = mongoose.connection;
+
+db.on("error", console.error.bind(console, "Error de conexión a MongoDB:"));
+db.once("open", () => {
+  console.log("Conectado a MongoDB");
+});
 
 export default db;
